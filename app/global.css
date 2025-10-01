@@ -1,3 +1,22 @@
 body {
-    background-color: rgb(255, 255, 148);
+    background-color: beige;
+}
+.encabezado {
+    position: relative; /* Necesario para que el posicionamiento absoluto funcione dentro de él */
+    height: 50px;
+    background-color: rgb(45, 50, 51);
+    margin-top: 0px;
+}
+.texto_encabezado{
+    text-align: right;
+    padding-top: 10px;
+    padding-right: 20px;
+}
+.cuadro_central {
+    position: absolute;
+    height: 100%;
+    left: 80%;
+    background-color: rgb(89, 152, 173);
+    margin-top: 0px;
+    padding: 0px;
 }
