@@ -1,0 +1,20 @@
+body {
+    background-color: beige;
+}
+.encabezado {
+    position: relative;
+    background: rgb(53, 71, 92);
+    width: 100%;
+    height: 50px;
+}
+.texto_encabezado {
+    color: white;
+    padding: 10px 20px 0px 0px;
+    text-align: right;
+}
+.principal {
+    position:absolute;
+    background: rgb(89, 113, 163);
+    width: 80%;
+    height: 100%;
+}
