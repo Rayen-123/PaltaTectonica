@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "next": "^15.4.5",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
   },
@@ -9,5 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
+  },
+  "devDependencies": {
+    "next": "^15.5.4"
   }
 }
