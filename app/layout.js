@@ -1,9 +1,12 @@
-import './global.css'
- 
+import './global.css';
+import { Provider } from '@/components/ui/provider';
+
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html suppressHydrationWarning>
+      <body>
+        <Provider>{children}</Provider>
+      </body>
     </html>
   )
 }
