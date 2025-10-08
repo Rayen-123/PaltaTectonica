@@ -16,8 +16,9 @@ body {
     display: flex;
     flex: 1;
 }
+/*botones laterales*/
 .lateral {
-    background-color: #f0f0f0;
+    background-color: beige;
     width: 150px; /* Ancho del panel lateral */
     padding: 15px;
     display: flex;
@@ -47,6 +48,7 @@ body {
     margin: 10px;
     border-radius: 5px;
 }
+/*calendario*/
 .principal {
     background-color: #00a7b3;
     flex: 1;
@@ -55,7 +57,7 @@ body {
     overflow-y: auto;
 }
 .semana {
-    background-color: #fff6f0;
+    background-color: beige;
     padding: 15px;
     border-radius: 5px;
 }
@@ -63,6 +65,7 @@ body {
     color: #333;
     text-align: center;
     margin: 10px;
+    font-size: 20px;
 }
 .dia {
     margin-bottom: 15px;
@@ -91,5 +94,37 @@ body {
     width: 45%;
     text-align: center;
 }
+/*lista de compras */
+.principal-lista {
+    background-color: #00a7b3;
+    flex: 1;
+    color: white;
+    padding: 20px;
+    overflow-y: auto;
+}
+.principal-lista h2 {
+    text-align: center;
+    padding-bottom: 20px;
+    font-size: 20px;
+}
+.custom-table {
+  background-color:beige;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+
+.table-header-cell {
+  color: rgb(255, 255, 255) !important;
+  font-weight: bold !important;
+  background-color: #017f88 !important;
+  border-bottom: 2px solid #0699b5 !important;
+}
+
+.table-content, .total-row{
+    color: black;
+}
+
 
 
