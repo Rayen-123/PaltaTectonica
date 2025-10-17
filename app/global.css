@@ -31,6 +31,8 @@ body {
     border-color: #00a7b3;
     margin: 10px;
     border-radius: 5px;
+    cursor: pointer;
+
 }
 .recetas {
     background-color: #333;
@@ -39,6 +41,7 @@ body {
     border-color: #00a7b3;
     margin: 10px;
     border-radius: 5px;
+    cursor: pointer;
 }
 .lista {
     background-color: #333;
@@ -47,9 +50,10 @@ body {
     border-color: #00a7b3;
     margin: 10px;
     border-radius: 5px;
+    cursor: pointer;
 }
 /*calendario*/
-.principal {
+.principal-calendario {
     background-color: #00a7b3;
     flex: 1;
     color: white;
@@ -126,5 +130,215 @@ body {
     color: black;
 }
 
+/* recetas */
+.principal-recetas {
+    background-color: #00a7b3;
+    flex: 1;
+    color: white;
+    padding: 20px;
+    overflow-y: auto;
+    height: 100vh;
+    min-height: 100vh;
+}
 
+.principal-recetas h2 {
+    text-align: center;
+    padding-bottom: 20px;
+    font-size: 20px;
+}
 
+.contenedor-tarjetas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    align-items: flex-start;
+    max-height: calc(100vh - 100px); /* Limita la altura máxima */
+    overflow-y: auto; /* Permite scroll si hay muchas tarjetas */
+    padding: 10px;
+}
+
+.contenedor-tarjeta {
+    position: relative;
+    width: 300px;
+    min-width: 280px;
+    height: 400px;
+    perspective: 1000px;
+    flex: 0 1 auto;
+}
+
+.tarjeta-frente, .tarjeta-reverso {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    transition: transform 0.6s ease-in-out;
+    border-radius: 8px;
+}
+
+.tarjeta-reverso {
+    transform: rotateY(180deg);
+    overflow: hidden; /* Importante */
+}
+
+.contenedor-tarjeta.girada .tarjeta-frente {
+    transform: rotateY(-180deg);
+}
+
+.contenedor-tarjeta.girada .tarjeta-reverso {
+    transform: rotateY(0deg);
+}
+
+.tarjeta{
+    background-color: beige;
+    color: black;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.tarjeta-info {
+    overflow-y: auto !important; /* Fuerza el scroll */
+    height: 100%;
+}
+
+/* Asegurar que el contenido de la tarjeta sea scrollable */
+.tarjeta-info .card-body {
+    overflow-y: auto;
+    flex: 1;
+    padding: 16px;
+}
+
+.imagen-receta {
+    height: 180px;
+    object-fit: cover;
+    width: 100%;
+    flex-shrink: 0; /* Evita que la imagen se reduzca */
+}
+
+.botonAgregar {
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    flex: 1;
+}
+
+.botonGirar {
+    background-color: #666;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    flex: 1;
+}
+
+.botonGirar:hover, .botonAgregar:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.info-rapida {
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.ingredientes ul {
+    margin: 5px 0;
+    padding-left: 20px;
+}
+
+.ingredientes li {
+    margin-bottom: 3px;
+    font-size: 14px;
+}
+
+.instrucciones {
+    margin-top: 10px;
+}
+
+/* MEJORAS PARA EL SCROLL */
+.card-footer {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+    flex-shrink: 0; /* Evita que el footer se reduzca */
+    padding: 16px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #e0e0e0;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden; /* Importante */
+}
+
+/* Scroll personalizado para TODAS las tarjetas */
+.tarjeta-info::-webkit-scrollbar,
+.contenedor-tarjetas::-webkit-scrollbar {
+    width: 8px;
+}
+
+.tarjeta-info::-webkit-scrollbar-track,
+.contenedor-tarjetas::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.tarjeta-info::-webkit-scrollbar-thumb,
+.contenedor-tarjetas::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.tarjeta-info::-webkit-scrollbar-thumb:hover,
+.contenedor-tarjetas::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Para Firefox */
+.tarjeta-info {
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f1f1f1;
+}
+
+/* Media queries responsive (mantén los que tenías) */
+@media (min-width: 1200px) {
+    .contenedor-tarjeta {
+        width: 320px;
+    }
+}
+
+@media (max-width: 1199px) and (min-width: 768px) {
+    .contenedor-tarjeta {
+        width: calc(50% - 20px);
+        min-width: 250px;
+    }
+}
+
+@media (max-width: 767px) {
+    .contenedor-tarjeta {
+        width: 100%;
+        max-width: 400px;
+        min-width: unset;
+    }
+}
+
+@media (max-width: 480px) {
+    .contenedor-tarjeta {
+        height: 450px;
+    }
+    
+    .principal-recetas {
+        height: 100vh;
+        min-height: 100vh;
+    }
+}

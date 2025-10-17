@@ -2,7 +2,7 @@
 
 export default function Calendario() {
   return (
-    <div className="principal">
+    <div className="principal-calendario">
       <div className="semana">
         <h2>Semana</h2>
         <div className="dia">
