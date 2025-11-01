@@ -38,7 +38,7 @@ export default function Lista() {
               <Table.Cell textAlign="end">{item.price}</Table.Cell>
             </Table.Row>
           ))}
-          {/* Fila del Total */}
+          {}
           <Table.Row className="total-row">
             <Table.Cell colSpan={2} fontWeight="bold" textAlign="end">Total:</Table.Cell>
             <Table.Cell fontWeight="bold" textAlign="end">${total.toLocaleString('es-ES')}</Table.Cell>
