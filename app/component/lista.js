@@ -1,50 +1,133 @@
 "use client";
-import { Table } from "@chakra-ui/react"
-
-// Define los datos para la tabla.
-const items = [
-  { id: 1, name: "Leche", cantidad: "1L", price: "$1.200" },
-  { id: 2, name: "Pan", cantidad: "0.5kg", price: "$800" },
-  { id: 3, name: "Manzanas", cantidad: "2", price: "$1.100" },
-];
+import { Table } from "@chakra-ui/react";
+import { useState, useEffect } from "react";
 
 export default function Lista() {
-  // Función para calcular el total
-  const calcularTotal = () => {
-    return items.reduce((total, item) => {
-      // Remover el símbolo "$" y los puntos, luego convertir a número
-      const precioNumerico = parseInt(item.price.replace('$', '').replace('.', ''));
-      return total + precioNumerico;
-    }, 0);
+  const [items, setItems] = useState([]);
+
+  // Cargar datos del calendario y generar lista de compras
+  useEffect(() => {
+    const generarListaCompras = () => {
+      const planificacionGuardada = localStorage.getItem('planificacionComidas');
+      if (!planificacionGuardada) {
+        setItems([]);
+        return;
+      }
+
+      const planificacion = JSON.parse(planificacionGuardada);
+      const ingredientesAcumulados = {};
+
+      // Recorrer todas las semanas, días y comidas
+      Object.values(planificacion).forEach(semana => {
+        Object.values(semana).forEach(dia => {
+          Object.values(dia).forEach(receta => {
+            if (receta && receta.Ingredientes) {
+              receta.Ingredientes.forEach(ingrediente => {
+                const clave = `${ingrediente.Nombre}-${ingrediente.Unidad}`;
+                
+                if (ingredientesAcumulados[clave]) {
+                  // Sumar cantidades si ya existe
+                  ingredientesAcumulados[clave].cantidad += ingrediente.Cant;
+                } else {
+                  // Crear nuevo ingrediente
+                  ingredientesAcumulados[clave] = {
+                    id: Object.keys(ingredientesAcumulados).length + 1,
+                    nombre: ingrediente.Nombre,
+                    cantidad: ingrediente.Cant,
+                    unidad: ingrediente.Unidad,
+                    perecible: ingrediente.Perecible
+                  };
+                }
+              });
+            }
+          });
+        });
+      });
+
+      // Convertir a array y formatear cantidades
+      const listaFormateada = Object.values(ingredientesAcumulados).map(item => ({
+        ...item,
+        cantidadFormateada: formatearCantidad(item.cantidad, item.unidad)
+      }));
+
+      setItems(listaFormateada);
+    };
+
+    const formatearCantidad = (cantidad, unidad) => {
+      if (unidad === 'unidad' || unidad === 'dientes' || unidad === 'hojas') {
+        return `${cantidad} ${unidad}`;
+      } else if (unidad === 'gr' && cantidad >= 1000) {
+        return `${(cantidad / 1000).toFixed(1)} kg`;
+      } else if (unidad === 'ml' && cantidad >= 1000) {
+        return `${(cantidad / 1000).toFixed(1)} L`;
+      } else {
+        return `${cantidad} ${unidad}`;
+      }
+    };
+
+    generarListaCompras();
+
+    // Escuchar cambios en el localStorage
+    const handleStorageChange = () => {
+      generarListaCompras();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    // También verificar cambios periódicamente (por si hay cambios en la misma pestaña)
+    const interval = setInterval(generarListaCompras, 2000);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(interval);
+    };
+  }, []);
+
+  const calcularTotalIngredientes = () => {
+    return items.length;
   };
-  const total = calcularTotal();
+
+  const totalIngredientes = calcularTotalIngredientes();
 
   return (
     <div className="principal-lista">
       <h2>Lista de compras</h2>
-      <Table.Root size="sm" variant="outline" className="custom-table">
-        <Table.Header className="table-header">
-          <Table.Row >
-            <Table.ColumnHeader className="table-header-cell">Product</Table.ColumnHeader>
-            <Table.ColumnHeader className="table-header-cell">Cantidad</Table.ColumnHeader>
-            <Table.ColumnHeader className="table-header-cell" textAlign="end">Price</Table.ColumnHeader>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body className="table-body">
-          {items.map((item) => (
-            <Table.Row key={item.id} className="table-content">
-              <Table.Cell>{item.name}</Table.Cell>
-              <Table.Cell>{item.cantidad}</Table.Cell>
-              <Table.Cell textAlign="end">{item.price}</Table.Cell>
+
+      {items.length === 0 ? (
+        <div className="lista-vacia">
+          <p>No hay ingredientes en tu lista de compras.</p>
+          <p>Ve al calendario y planifica algunas comidas para generar tu lista.</p>
+        </div>
+      ) : (
+        <Table.Root size="sm" variant="outline" className="custom-table">
+          <Table.Header className="table-header">
+            <Table.Row>
+              <Table.ColumnHeader className="table-header-cell">Ingrediente</Table.ColumnHeader>
+              <Table.ColumnHeader className="table-header-cell">Cantidad</Table.ColumnHeader>
+              <Table.ColumnHeader className="table-header-cell">Tipo</Table.ColumnHeader>
             </Table.Row>
-          ))}
-          {}
-          <Table.Row className="total-row">
-            <Table.Cell colSpan={2} fontWeight="bold" textAlign="end">Total:</Table.Cell>
-            <Table.Cell fontWeight="bold" textAlign="end">${total.toLocaleString('es-ES')}</Table.Cell>
-          </Table.Row>
-        </Table.Body>
-      </Table.Root>
+          </Table.Header>
+          <Table.Body className="table-body">
+            {items.map((item) => (
+              <Table.Row key={item.id} className={`table-content ${item.perecible ? 'ingrediente-perecible' : ''}`}>
+                <Table.Cell>{item.nombre}</Table.Cell>
+                <Table.Cell>{item.cantidadFormateada}</Table.Cell>
+                <Table.Cell>
+                  {item.perecible ? (
+                    <span className="badge-perecible">Perecible</span>
+                  ) : (
+                    <span className="badge-no-perecible">No perecible</span>
+                  )}
+                </Table.Cell>
+              </Table.Row>
+            ))}
+            <Table.Row className="total-row">
+              <Table.Cell colSpan={2} fontWeight="bold" textAlign="end">Total ingredientes:</Table.Cell>
+              <Table.Cell fontWeight="bold">{totalIngredientes}</Table.Cell>
+            </Table.Row>
+          </Table.Body>
+        </Table.Root>
+      )}
     </div>
   );
 }

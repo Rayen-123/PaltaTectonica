@@ -7,7 +7,20 @@ export default function Recetas() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [tarjetasGiradas, setTarjetasGiradas] = useState({});
+  const [recetasGuardadas, setRecetasGuardadas] = useState([]);
 
+  // Cargar recetas guardadas desde localStorage al iniciar
+  useEffect(() => {
+    const recetasGuardadasStorage = localStorage.getItem('recetasGuardadas');
+    if (recetasGuardadasStorage) {
+      setRecetasGuardadas(JSON.parse(recetasGuardadasStorage));
+    }
+  }, []);
+
+  // Guardar recetas guardadas en localStorage cuando cambien
+  useEffect(() => {
+    localStorage.setItem('recetasGuardadas', JSON.stringify(recetasGuardadas));
+  }, [recetasGuardadas]);
 
   const obtenerRecetas = async () => {
     try {
@@ -18,7 +31,6 @@ export default function Recetas() {
       if (!res.ok) throw new Error("Error al obtener recetas");
 
       const data = await res.json();
-      console.log("Recetas desde API →", data);
       setRecetas(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Error al cargar recetas:", err);
@@ -32,9 +44,6 @@ export default function Recetas() {
     obtenerRecetas();
   }, []);
 
-  const guardarReceta = (id) => {
-
-  }
   const girarTarjeta = (id) => {
     setTarjetasGiradas((prev) => ({
       ...prev,
@@ -45,6 +54,24 @@ export default function Recetas() {
   const recargarRecetas = () => {
     obtenerRecetas();
     setTarjetasGiradas({});
+  };
+
+  const estaGuardada = (recetaId) => {
+    return recetasGuardadas.some(r => r.Id === recetaId);
+  };
+
+  const manejarGuardarReceta = (receta, e) => {
+    e.stopPropagation();
+    
+    let nuevasRecetasGuardadas;
+    
+    if (estaGuardada(receta.Id)) {
+      nuevasRecetasGuardadas = recetasGuardadas.filter(r => r.Id !== receta.Id);
+    } else {
+      nuevasRecetasGuardadas = [...recetasGuardadas, receta];
+    }
+    
+    setRecetasGuardadas(nuevasRecetasGuardadas);
   };
 
   if (loading) {
@@ -60,7 +87,6 @@ export default function Recetas() {
       </div>
     );
   }
-
 
   if (error) {
     return (
@@ -80,9 +106,14 @@ export default function Recetas() {
     <div className="principal-recetas">
       <div className="header-recetas">
         <h2>🍳 Recetas</h2>
-        <Button onClick={recargarRecetas} className="botonNuevas">
-          🔄 Actualizar
-        </Button>
+        <div className="contador-recetas">
+          <Text color="white" fontSize="sm">
+            {recetasGuardadas.length} recetas guardadas
+          </Text>
+          <Button onClick={recargarRecetas} className="botonNuevas">
+            🔄 Actualizar
+          </Button>
+        </div>
       </div>
 
       <div className="contenedor-netflix">
@@ -95,7 +126,6 @@ export default function Recetas() {
                   tarjetasGiradas[receta.Id] ? "girada" : ""
                 }`}
               >
-                {/* Cara frontal */}
                 <div className="tarjeta-frente">
                   <Card.Root className="tarjeta">
                     <Image src={receta.Img} alt={receta.Nombre} className="imagen-receta" />
@@ -108,7 +138,12 @@ export default function Recetas() {
                       </div>
                     </Card.Body>
                     <Card.Footer className="card-footer">
-                      <Button className="botonAgregar">❤️ Guardar</Button>
+                      <Button 
+                        className={`botonAgregar ${estaGuardada(receta.Id) ? 'guardada' : ''}`}
+                        onClick={(e) => manejarGuardarReceta(receta, e)}
+                      >
+                        {estaGuardada(receta.Id) ? '❤️ Guardada' : '❤️ Guardar'}
+                      </Button>
                       <Button
                         className="botonGirar"
                         onClick={() => girarTarjeta(receta.Id)}
@@ -119,21 +154,12 @@ export default function Recetas() {
                   </Card.Root>
                 </div>
 
-                {/* Cara trasera */}
                 <div className="tarjeta-reverso">
                   <Card.Root className="tarjeta tarjeta-info">
-                    <Card.Body
-                      style={{
-                        padding: "16px",
-                        overflow: "hidden",
-                        display: "flex",
-                        flexDirection: "column",
-                      }}
-                    >
+                    <Card.Body className="card-body-reverso">
                       <Box flex="0">
                         <Card.Title>{receta.Nombre}</Card.Title>
                       </Box>
-
                       <Box flex="1" overflow="auto" className="contenido-scrollable">
                         <div className="ingredientes">
                           <Text>
@@ -147,7 +173,6 @@ export default function Recetas() {
                             ))}
                           </ul>
                         </div>
-
                         <div className="instrucciones">
                           <Text>
                             <strong>👩‍🍳 Preparación:</strong>
@@ -158,9 +183,13 @@ export default function Recetas() {
                         </div>
                       </Box>
                     </Card.Body>
-
                     <Card.Footer className="card-footer">
-                      <Button className="botonAgregar">❤️ Guardar</Button>
+                      <Button 
+                        className={`botonAgregar ${estaGuardada(receta.Id) ? 'guardada' : ''}`}
+                        onClick={(e) => manejarGuardarReceta(receta, e)}
+                      >
+                        {estaGuardada(receta.Id) ? '❤️ Guardada' : '❤️ Guardar'}
+                      </Button>
                       <Button
                         className="botonGirar"
                         onClick={() => girarTarjeta(receta.Id)}
