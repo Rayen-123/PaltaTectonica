@@ -7,20 +7,6 @@ export default function Recetas() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [tarjetasGiradas, setTarjetasGiradas] = useState({});
-  const [recetasGuardadas, setRecetasGuardadas] = useState([]);
-
-  // Cargar recetas guardadas desde localStorage al iniciar
-  useEffect(() => {
-    const recetasGuardadasStorage = localStorage.getItem('recetasGuardadas');
-    if (recetasGuardadasStorage) {
-      setRecetasGuardadas(JSON.parse(recetasGuardadasStorage));
-    }
-  }, []);
-
-  // Guardar recetas guardadas en localStorage cuando cambien
-  useEffect(() => {
-    localStorage.setItem('recetasGuardadas', JSON.stringify(recetasGuardadas));
-  }, [recetasGuardadas]);
 
   const obtenerRecetas = async () => {
     try {
@@ -55,25 +41,23 @@ export default function Recetas() {
     obtenerRecetas();
     setTarjetasGiradas({});
   };
+  useEffect(() => {
+    const handleWheel = (e) => {
+      const scrollContainers = document.querySelectorAll('.contenedor-tags-scroll');
+      scrollContainers.forEach(container => {
+        if (container.contains(e.target) || e.target === container) {
+          // Permitir el scroll nativo
+          return;
+        }
+      });
+    };
 
-  const estaGuardada = (recetaId) => {
-    return recetasGuardadas.some(r => r.Id === recetaId);
-  };
-
-  const manejarGuardarReceta = (receta, e) => {
-    e.stopPropagation();
+    document.addEventListener('wheel', handleWheel, { passive: false });
     
-    let nuevasRecetasGuardadas;
-    
-    if (estaGuardada(receta.Id)) {
-      nuevasRecetasGuardadas = recetasGuardadas.filter(r => r.Id !== receta.Id);
-    } else {
-      nuevasRecetasGuardadas = [...recetasGuardadas, receta];
-    }
-    
-    setRecetasGuardadas(nuevasRecetasGuardadas);
-  };
-
+    return () => {
+      document.removeEventListener('wheel', handleWheel);
+    };
+  }, []);
   if (loading) {
     return (
       <div className="principal-recetas">
@@ -107,9 +91,6 @@ export default function Recetas() {
       <div className="header-recetas">
         <h2>🍳 Recetas</h2>
         <div className="contador-recetas">
-          <Text color="white" fontSize="sm">
-            {recetasGuardadas.length} recetas guardadas
-          </Text>
           <Button onClick={recargarRecetas} className="botonNuevas">
             🔄 Actualizar
           </Button>
@@ -131,23 +112,18 @@ export default function Recetas() {
                     <Image src={receta.Img} alt={receta.Nombre} className="imagen-receta" />
                     <Card.Body className="card-body">
                       <Card.Title className="nombreReceta">{receta.Nombre}</Card.Title>
-                      <div className="badges">
-                        {receta.Tags?.map((tag, i) => (
-                          <span key={i} className="badge">{tag}</span>
-                        ))}
+                      <div className="contenedor-tags-scroll">
+                        <div className="badges-grid">
+                          {receta.Tags?.map((tag, i) => (
+                            <span key={i} className="badge">{tag}</span>
+                          ))}
+                        </div>
                       </div>
                     </Card.Body>
                     <Card.Footer className="card-footer">
-                      <Button 
-                        className={`botonAgregar ${estaGuardada(receta.Id) ? 'guardada' : ''}`}
-                        onClick={(e) => manejarGuardarReceta(receta, e)}
-                      >
-                        {estaGuardada(receta.Id) ? '❤️ Guardada' : '❤️ Guardar'}
-                      </Button>
                       <Button
                         className="botonGirar"
-                        onClick={() => girarTarjeta(receta.Id)}
-                      >
+                        onClick={() => girarTarjeta(receta.Id)}>
                         👀 Ver
                       </Button>
                     </Card.Footer>
@@ -184,12 +160,6 @@ export default function Recetas() {
                       </Box>
                     </Card.Body>
                     <Card.Footer className="card-footer">
-                      <Button 
-                        className={`botonAgregar ${estaGuardada(receta.Id) ? 'guardada' : ''}`}
-                        onClick={(e) => manejarGuardarReceta(receta, e)}
-                      >
-                        {estaGuardada(receta.Id) ? '❤️ Guardada' : '❤️ Guardar'}
-                      </Button>
                       <Button
                         className="botonGirar"
                         onClick={() => girarTarjeta(receta.Id)}

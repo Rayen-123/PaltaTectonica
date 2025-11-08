@@ -104,25 +104,17 @@ export default function Lista() {
             <Table.Row>
               <Table.ColumnHeader className="table-header-cell">Ingrediente</Table.ColumnHeader>
               <Table.ColumnHeader className="table-header-cell">Cantidad</Table.ColumnHeader>
-              <Table.ColumnHeader className="table-header-cell">Tipo</Table.ColumnHeader>
             </Table.Row>
           </Table.Header>
           <Table.Body className="table-body">
             {items.map((item) => (
-              <Table.Row key={item.id} className={`table-content ${item.perecible ? 'ingrediente-perecible' : ''}`}>
+              <Table.Row key={item.id} className="table-content">
                 <Table.Cell>{item.nombre}</Table.Cell>
                 <Table.Cell>{item.cantidadFormateada}</Table.Cell>
-                <Table.Cell>
-                  {item.perecible ? (
-                    <span className="badge-perecible">Perecible</span>
-                  ) : (
-                    <span className="badge-no-perecible">No perecible</span>
-                  )}
-                </Table.Cell>
               </Table.Row>
             ))}
             <Table.Row className="total-row">
-              <Table.Cell colSpan={2} fontWeight="bold" textAlign="end">Total ingredientes:</Table.Cell>
+              <Table.Cell fontWeight="bold" textAlign="end">Total ingredientes:</Table.Cell>
               <Table.Cell fontWeight="bold">{totalIngredientes}</Table.Cell>
             </Table.Row>
           </Table.Body>

@@ -6,6 +6,8 @@ export default function Calendario() {
   const [seleccionActual, setSeleccionActual] = useState(null);
   const [planificacion, setPlanificacion] = useState({});
   const [recetasGuardadas, setRecetasGuardadas] = useState([]);
+  const [recetasApi, setRecetasApi] = useState([]);
+  const [cargando, setCargando] = useState(false);
   
   const dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
   const comidas = ["Desayuno", "Colacion", "Almuerzo", "Once", "Cena"];
@@ -23,20 +25,37 @@ export default function Calendario() {
     }
   }, []);
 
+  // Cargar recetas de la API cuando se abre el drawer
+  useEffect(() => {
+    if (seleccionActual) {
+      cargarRecetasDeAPI();
+    }
+  }, [seleccionActual]);
+
   // Guardar en localStorage cuando cambien los datos
   useEffect(() => {
     localStorage.setItem('planificacionComidas', JSON.stringify(planificacion));
   }, [planificacion]);
 
-  const semanaAnterior = () => {
-    if (semanaActual > 1) {
-      setSemanaActual(semanaActual - 1);
-      setSeleccionActual(null);
+  const cargarRecetasDeAPI = async () => {
+    setCargando(true);
+    try {
+      const response = await fetch('/api/recetas');
+      if (response.ok) {
+        const data = await response.json();
+        setRecetasApi(data);
+      } else {
+        console.error('Error al cargar recetas de la API');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setCargando(false);
     }
   };
 
-  const semanaSiguiente = () => {
-    setSemanaActual(semanaActual + 1);
+  const irASemana = (numeroSemana) => {
+    setSemanaActual(numeroSemana);
     setSeleccionActual(null);
   };
 
@@ -49,7 +68,7 @@ export default function Calendario() {
     
     const recetaParaCalendario = {
       ...receta,
-      idUnico: `${receta.Id}-${Date.now()}`
+      idUnico: `${receta.id || receta.Id}-${Date.now()}`
     };
     
     const nuevaPlanificacion = {
@@ -89,80 +108,164 @@ export default function Calendario() {
   const obtenerRecetaPlanificada = (semana, dia, comida) => {
     return planificacion[semana]?.[dia]?.[comida] || null;
   };
+
   const notificarCambioLista = () => {
-    // Disparar un evento personalizado para que lista.js se actualice
     window.dispatchEvent(new Event('storage'));
   };
-  const cancelarSeleccion = () => {
+
+  const cerrarDrawer = () => {
     setSeleccionActual(null);
+    setRecetasApi([]);
   };
 
-  // Si hay una selección activa, mostrar las recetas
-  if (seleccionActual) {
+  // Componente de Paginación simple y funcional
+  const PaginacionSemanas = () => {
+    const totalSemanas = 52;
+    
+    // Mostrar páginas de 10 semanas cada una
+    const semanasPorPagina = 10;
+    const paginaActual = Math.ceil(semanaActual / semanasPorPagina);
+    const totalPaginas = Math.ceil(totalSemanas / semanasPorPagina);
+    
+    const inicio = (paginaActual - 1) * semanasPorPagina + 1;
+    const fin = Math.min(paginaActual * semanasPorPagina, totalSemanas);
+
+    // Generar semanas visibles para la página actual
+    const semanasVisibles = [];
+    for (let i = inicio; i <= fin; i++) {
+      semanasVisibles.push(i);
+    }
+
+    const irAPaginaAnterior = () => {
+      if (paginaActual > 1) {
+        const nuevaSemana = (paginaActual - 2) * semanasPorPagina + 1;
+        setSemanaActual(nuevaSemana);
+      }
+    };
+
+    const irAPaginaSiguiente = () => {
+      if (paginaActual < totalPaginas) {
+        const nuevaSemana = paginaActual * semanasPorPagina + 1;
+        setSemanaActual(nuevaSemana);
+      }
+    };
+
     return (
-      <div className="principal-calendario">
-        <div className="controles-semana">
-          <button onClick={cancelarSeleccion} className="boton-volver">
-            ← Volver al calendario
+      <div className="paginacion-semanas">
+        <div className="controles-paginacion">
+          <button 
+            onClick={irAPaginaAnterior} 
+            disabled={paginaActual === 1}
+            className="boton-paginacion anterior"
+            title="Página anterior"
+          >
+            ‹
           </button>
           
-          <h2>Seleccionar receta para {seleccionActual.dia} - {seleccionActual.comida}</h2>
-          
-          <div className="mensaje-reutilizable">
-            Puedes usar la misma receta múltiples veces
-          </div>
-        </div>
-
-        <div className="semana">
-          {recetasGuardadas.length === 0 ? (
-            <div className="sin-recetas-guardadas">
-              <p>No tienes recetas guardadas. Ve a la sección de recetas y guarda algunas primero.</p>
-              <button onClick={cancelarSeleccion} className="boton-volver-calendario">
-                Volver al calendario
+          <div className="numeros-semanas">
+            {semanasVisibles.map((semana) => (
+              <button
+                key={semana}
+                onClick={() => irASemana(semana)}
+                className={`numero-semana ${semana === semanaActual ? 'activa' : ''}`}
+                title={`Semana ${semana}`}
+              >
+                {semana}
               </button>
-            </div>
-          ) : (
-            <div className="grid-recetas">
-              {recetasGuardadas.map(receta => (
-                <div 
-                  key={receta.Id} 
-                  className="card-receta-seleccion"
-                  onClick={() => seleccionarReceta(receta)}
-                >
-                  <img 
-                    src={receta.Img} 
-                    alt={receta.Nombre} 
-                    className="imagen-receta-seleccion"
-                  />
-                  <div className="nombre-receta-seleccion">{receta.Nombre}</div>
-                  <div className="tags-receta-seleccion">
-                    {receta.Tags?.slice(0, 2).join(', ')}
-                  </div>
-                  <div className="mensaje-reutilizable-card">
-                    ✓ Puedes usar esta receta múltiples veces
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+            ))}
+          </div>
+          
+          <button 
+            onClick={irAPaginaSiguiente}
+            disabled={paginaActual === totalPaginas}
+            className="boton-paginacion siguiente"
+            title="Página siguiente"
+          >
+            ›
+          </button>
+        </div>
+        
+        <div className="info-paginacion">
+          <span className="rango-semanas">
+            Semanas {inicio}-{fin} de {totalSemanas}
+          </span>
         </div>
       </div>
     );
-  }
+  };
+
+  // Drawer para seleccionar recetas
+  const DrawerSeleccionRecetas = () => {
+    if (!seleccionActual) return null;
+
+    return (
+      <div className="drawer-overlay">
+        <div className="drawer-container drawer-xl">
+          <div className="drawer-header">
+            <h2>
+              Seleccionar receta para {seleccionActual.dia} - {seleccionActual.comida}
+            </h2>
+            <button onClick={cerrarDrawer} className="boton-cerrar-drawer">
+              ✕
+            </button>
+          </div>
+
+          <div className="drawer-content">
+            {cargando ? (
+              <div className="cargando-recetas">
+                <p>Cargando recetas...</p>
+              </div>
+            ) : recetasApi.length === 0 ? (
+              <div className="sin-recetas">
+                <p>No se encontraron recetas disponibles.</p>
+                <button onClick={cerrarDrawer} className="boton-volver">
+                  Volver al calendario
+                </button>
+              </div>
+            ) : (
+              <div className="grid-recetas-drawer">
+                {recetasApi.map(receta => (
+                  <div 
+                    key={receta.id || receta.Id} 
+                    className="card-receta-drawer"
+                    onClick={() => seleccionarReceta(receta)}
+                  >
+                    <img 
+                      src={receta.Img || receta.imagen || receta.image} 
+                      alt={receta.Nombre || receta.nombre} 
+                      className="imagen-receta-drawer"
+                      onError={(e) => {
+                        e.target.src = '/placeholder-receta.jpg';
+                      }}
+                    />
+                    <div className="info-receta-drawer">
+                      <div className="nombre-receta-drawer">
+                        {receta.Nombre || receta.nombre}
+                      </div>
+                      <div className="tags-receta-drawer">
+                        {receta.Tags?.slice(0, 2).join(', ') || 
+                         receta.tags?.slice(0, 2).join(', ') || 
+                         receta.categoria}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   // Vista normal del calendario
   return (
     <div className="principal-calendario">
       <div className="controles-semana">
-        <button onClick={semanaAnterior} disabled={semanaActual === 1}>
-          ← Semana Anterior
-        </button>
-        
-        <h2>Semana {semanaActual}</h2>
-        
-        <button onClick={semanaSiguiente}>
-          Semana Siguiente →
-        </button>
+        <div className="titulo-semana">
+          <h2>Semana {semanaActual}</h2>
+          <PaginacionSemanas />
+        </div>
       </div>
 
       <div className="semana">
@@ -182,14 +285,23 @@ export default function Calendario() {
                       <div className="nombre-comida">{comida}</div>
                       {receta ? (
                         <div className="receta-asignada">
-                          <span className="nombre-receta-asignada">{receta.Nombre}</span>
-                          <button 
-                            onClick={(e) => eliminarReceta(dia, comida, e)}
-                            className="boton-eliminar-receta"
-                            title="Eliminar receta"
-                          >
-                            ✕
-                          </button>
+                          <img 
+                            src={receta.Img || receta.imagen} 
+                            alt={receta.Nombre || receta.nombre}
+                            className="imagen-receta-calendario"
+                          />
+                          <div className="fila-receta">
+                            <span className="nombre-receta-completo">
+                              {receta.Nombre || receta.nombre}
+                            </span>
+                            <button 
+                              onClick={(e) => eliminarReceta(dia, comida, e)}
+                              className="boton-eliminar-receta"
+                              title="Eliminar receta"
+                            >
+                              ✕
+                            </button>
+                          </div>
                         </div>
                       ) : (
                         <div className="mensaje-agregar-receta">
@@ -204,6 +316,9 @@ export default function Calendario() {
           </div>
         ))}
       </div>
+
+      {/* Drawer para seleccionar recetas */}
+      <DrawerSeleccionRecetas />
     </div>
   );
 }
