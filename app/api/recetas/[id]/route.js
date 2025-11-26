@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { Recetas } from "../Recetario"
+import { Recetas } from "../../Recetario"
 
 
 // GET /api/recetas/[id]
