@@ -1,21 +1,61 @@
 import { NextResponse } from "next/server";
-import { Usuarios } from "./Usuarios"
+import { supabase } from "../../lib/supabase";
+
+
+export async function GET() {
+  const { data, error } = await supabase
+    .from("usuarios")
+    .select("id, nombre, img, calendario")
+    .order("id", { ascending: true });
+
+  if (error) {
+    console.error(error);
+    return NextResponse.json(
+      { error: "Error al obtener usuarios" },
+      { status: 500 }
+    );
+  }
+
+  return NextResponse.json(data, { status: 200 });
+}
 
 export async function POST(req) {
-  const NuevoUsuario = await req.json();
+  const nuevoUsuario = await req.json();
 
-  if (!NuevoUsuario.Nombre) {
-    return NextResponse.json({ error: "Faltan datos" }, { status: 400 });
+  if (!nuevoUsuario.nombre) {
+    return NextResponse.json(
+      { error: "Faltan datos: nombre" },
+      { status: 400 }
+    );
   }
 
-  if (!NuevoUsuario.Img){
-    NuevoUsuario.Img = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimg.freepik.com%2Ffoto-gratis%2Fresumen-superficie-texturas-muro-piedra-hormigon-blanco_74190-8189.jpg&f=1&nofb=1&ipt=8b72b9ef3050dee7534778ac2b871f9b89b1bf12a0fed0fe1f9b5434271ee60f"
+  if (!nuevoUsuario.img) {
+    nuevoUsuario.img =
+      "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimg.freepik.com%2Ffoto-gratis%2Fresumen-superficie-texturas-muro-piedra-hormigon-blanco_74190-8189.jpg&f=1&nofb=1";
   }
 
-  NuevoUsuario.Id = (Usuarios.at(-1)?.Id ?? 0) + 1;
+  if (!nuevoUsuario.calendario) {
+    nuevoUsuario.calendario = {};
+  }
 
-  Usuarios.push({ ...NuevoUsuario,
-                    Calendario: {} });
+  const { data, error } = await supabase
+    .from("usuarios")
+    .insert([nuevoUsuario])
+    .select("id")
+    .single();
 
-  return NextResponse.json({ Id : NuevoUsuario.Id, Resp : "Usuario creado correctamente"},{status:201})
+  if (error) {
+    return NextResponse.json(
+      { error: "Error al crear usuario" },
+      { status: 500 }
+    );
+  }
+
+  return NextResponse.json(
+    {
+      Id: data.id,
+      Resp: "Usuario creado correctamente",
+    },
+    { status: 201 }
+  );
 }
