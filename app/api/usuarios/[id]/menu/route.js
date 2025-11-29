@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { Usuarios } from "../../Usuarios";
+import { supabase } from "../../../../lib/supabase";
 
 function getSemanaYAñoISO(fecha = new Date()) {
   const f = new Date(Date.UTC(fecha.getFullYear(), fecha.getMonth(), fecha.getDate()));
@@ -10,67 +10,115 @@ function getSemanaYAñoISO(fecha = new Date()) {
   return { semana, año: f.getUTCFullYear() };
 }
 
-export async function POST(req, {params}){
-    const Nuevo = await req.json();
-    const Id = params.id
-    const Usuario = Usuarios.find(u => u.Id == Id)
+export async function POST(req, { params }) {
+  const Nuevo = await req.json();
+  const Id = parseInt(params.id, 10);
 
-    if (!Usuario){
-        return NextResponse.json({error: "El usuario no existe"}, {status: 404})
-    }   
+  const { data: usuario, error } = await supabase
+    .from("usuarios")
+    .select("id, calendario")
+    .eq("id", Id)
+    .single();
 
-    const {Semana, Año} = getSemanaYAñoISO()
-    const Dia = Nuevo.Dia
-    const Index = Nuevo.Pos -1
+  if (error || !usuario) {
+    return NextResponse.json({ error: "El usuario no existe" }, { status: 404 });
+  }
 
-    if (Nuevo.Año == Año){
-        if ( (0 > Nuevo.Semana - Semana) || (Nuevo.Semana - Semana > 12)) return NextResponse.json({error: "La fecha escapa de los limites (max 12 semanas)"}, {status: 404})
-    }
-    else if (Nuevo.Año > Año){
-        if ((Nuevo.Semana*(Nuevo.Año-Año) + (42 - Semana)) > 12) return NextResponse.json({error: "La fecha escapa de los limites (max 12 semanas)"}, {status: 404})
-    }
-    else{
-        return NextResponse.json({error: "La fecha escapa de los limites (max 12 semanas)"}, {status: 404})
-    }
+  const { semana: semanaActual, año: añoActual } = getSemanaYAñoISO();
+  const Dia = Nuevo.Dia;
+  const Index = Nuevo.Pos - 1;
 
-    if (!Usuario.Calendario){
-        Usuario.Calendario = {};
+  if (Nuevo.Año === añoActual) {
+    if (0 > Nuevo.Semana - semanaActual || Nuevo.Semana - semanaActual > 12) {
+      return NextResponse.json(
+        { error: "La fecha escapa de los limites (max 12 semanas)" },
+        { status: 404 }
+      );
     }
-    if (!Usuario.Calendario[Año]){
-        Usuario.Calendario[Año] = {};
+  } else if (Nuevo.Año > añoActual) {
+    if (Nuevo.Semana * (Nuevo.Año - añoActual) + (42 - semanaActual) > 12) {
+      return NextResponse.json(
+        { error: "La fecha escapa de los limites (max 12 semanas)" },
+        { status: 404 }
+      );
     }
-    if (!Usuario.Calendario[Año][Semana]){
-       Usuario.Calendario[Año][Semana] = {};
-    }
-    if (!Usuario.Calendario[Año][Semana][Dia]){
-        Usuario.Calendario[Año][Semana][Dia] = [{},{},{},{},{},{},{}];
-    }
+  } else {
+    return NextResponse.json(
+      { error: "La fecha escapa de los limites (max 12 semanas)" },
+      { status: 404 }
+    );
+  }
 
-    
-    Usuario.Calendario[Año][Semana][Dia][Index].Nombre = Nuevo.Menu.Nombre
-    Usuario.Calendario[Año][Semana][Dia][Index].Porciones = Nuevo.Menu.Porciones
-    Usuario.Calendario[Año][Semana][Dia][Index].Id = Nuevo.Menu.Id
-    
+  const Año = Nuevo.Año;
+  const Semana = Nuevo.Semana;
 
-    return NextResponse.json({Resp: "Sección cambiada correctamente"},{status: 200})
+  const calendario = usuario.calendario || {};
+
+  if (!calendario[Año]) {
+    calendario[Año] = {};
+  }
+  if (!calendario[Año][Semana]) {
+    calendario[Año][Semana] = {};
+  }
+  if (!calendario[Año][Semana][Dia]) {
+    calendario[Año][Semana][Dia] = [{}, {}, {}, {}, {}, {}, {}];
+  }
+
+  calendario[Año][Semana][Dia][Index].Nombre = Nuevo.Menu.Nombre;
+  calendario[Año][Semana][Dia][Index].Porciones = Nuevo.Menu.Porciones;
+  calendario[Año][Semana][Dia][Index].Id = Nuevo.Menu.Id;
+
+  const { error: updateError } = await supabase
+    .from("usuarios")
+    .update({ calendario })
+    .eq("id", Id);
+
+  if (updateError) {
+    return NextResponse.json(
+      { error: "Error al actualizar el calendario" },
+      { status: 500 }
+    );
+  }
+
+  return NextResponse.json({ Resp: "Sección cambiada correctamente" }, { status: 200 });
 }
 
-export async function DELETE(req, {params}) {
-    const Eliminar = await req.json();
-    const Id = params.id
-    const Usuario = Usuarios.find(u => u.Id == Id)
+export async function DELETE(req, { params }) {
+  const Eliminar = await req.json();
+  const Id = parseInt(params.id, 10);
 
-    if (!Usuario){
-        return NextResponse.json({error: "Usuario no encontrado"},{status: 404})
-    }
+  const { data: usuario, error } = await supabase
+    .from("usuarios")
+    .select("id, calendario")
+    .eq("id", Id)
+    .single();
 
-    const {Año, Semana, Dia} = Eliminar
-    const Index = Eliminar.Pos -1
+  if (error || !usuario) {
+    return NextResponse.json({ error: "Usuario no encontrado" }, { status: 404 });
+  }
 
-    if  (!(Usuario.Calendario?.[Año]?.[Semana]?.[Dia]?.[Index])){
-        return NextResponse.json({Resp: "Seccion eliminada correctamente"}, {status: 200})
-    }
+  const { Año, Semana, Dia, Pos } = Eliminar;
+  const Index = Pos - 1;
 
-    Usuario.Calendario[Año][Semana][Dia][Index] = {}
-    return NextResponse.json({Resp: "Seccion eliminada correctamente"}, {status: 200})
+  const calendario = usuario.calendario || {};
+
+  if (!(calendario?.[Año]?.[Semana]?.[Dia]?.[Index])) {
+    return NextResponse.json({ Resp: "Seccion eliminada correctamente" }, { status: 200 });
+  }
+
+  calendario[Año][Semana][Dia][Index] = {};
+
+  const { error: updateError } = await supabase
+    .from("usuarios")
+    .update({ calendario })
+    .eq("id", Id);
+
+  if (updateError) {
+    return NextResponse.json(
+      { error: "Error al actualizar el calendario" },
+      { status: 500 }
+    );
+  }
+
+  return NextResponse.json({ Resp: "Seccion eliminada correctamente" }, { status: 200 });
 }
