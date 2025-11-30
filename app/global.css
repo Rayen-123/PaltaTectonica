@@ -20,6 +20,135 @@ body {
     flex: 1;
 }
 
+.principal-lista {
+  color: black; /* en vez de white */
+}
+
+.principal-lista .custom-table th,
+.principal-lista .custom-table td {
+  color: black !important;
+}
+
+/*Slider de la lista de taaags porsia*/
+.radiocards-tags-wrapper {
+  max-height: 800px;    
+  overflow-y: auto;     
+  overflow-x: hidden;
+  padding-right: 4px;    
+}
+
+
+.radiocards-tags-wrapper::-webkit-scrollbar {
+  width: 8px;
+}
+
+.radiocards-tags-wrapper::-webkit-scrollbar-track {
+  background: #0b4650;   
+  border-radius: 10px;
+}
+
+.radiocards-tags-wrapper::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 10px;
+}
+
+.radiocards-tags-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #777;
+}
+
+/*lista*/
+.recetas-layout {
+  display: flex;
+  gap: 1.5rem;
+}
+
+/* Columna izquierda */
+.filtros-tags {
+  width: 150px;
+  flex-shrink: 0;
+  color: white;
+}
+
+.radiocards-tags {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tag-card {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #555;
+  background: #1f1f1f84;
+  color: white;
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.tag-card-activo {
+  border-color: #fbbf24;
+  background: #1f1f1f84;
+  font-weight: 600;
+}
+
+/* Columna derecha */
+.zona-recetas {
+  flex: 1;
+  min-width: 0;
+}
+
+
+
+/* Buscador */
+.busqueda-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding-left: 20px;
+}
+.busqueda-container-drawer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding-left: 2px;
+}
+
+.boton-busqueda{
+    width: 80px;        
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 10px; 
+    background-color: rgb(255, 255, 255); 
+    cursor: pointer;
+    font-weight: bold;
+    color: black;
+}
+.boton-busqueda-recarga{
+    width: 100px;        
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 10px; 
+    background-color: rgb(255, 255, 255); 
+    cursor: pointer;
+    font-weight: bold;
+    color: black;
+}
+.buscador{
+    
+    width: 500px;        
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 10px; 
+    background-color: #faf7f7;
+    color: black;
+}
+
+
+
 /* Botones laterales */
 .lateral {
     background-color: beige;
