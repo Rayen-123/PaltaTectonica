@@ -1,16 +1,54 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Calendario from './component/calendario.js';
 import Recetas from "./component/recetas.js";
 import Lista from "./component/lista.js";
 
+
 export default function Page() {
   const [view, setView] = useState("calendario");
+  const [usuario, setUsuario] = useState(null);
+  const [cargando, setCargando] = useState(true);
+
+  useEffect(() => {
+      async function cargarDatosIniciales() {
+        try {
+          setCargando(true);
+          
+          const resUsuario = await fetch("/api/usuarios/7")
+  
+          if (!resUsuario.ok) throw new Error("Error al obtener usuario");
+  
+          const usuarioData = await resUsuario.json();
+
+          setUsuario(usuarioData);
+
+        } catch (error) {
+          console.error("Error cargando datos iniciales:", error);
+        } finally {
+          setCargando(false);
+        }
+      }
+  
+      cargarDatosIniciales();
+    }, []);
   
   return (
     <>
       <div className="contenedor">
-        <div className="encabezado"></div>
+        <div className="encabezado">
+          {usuario && (
+            <div className="usuario-header">
+              <img
+                src={usuario.Img}
+                alt={usuario.Nombre}
+                className="usuario-avatar"
+              />
+              <span className="usuario-nombre">{usuario.Nombre}</span>
+            </div>
+          )}
+          <h3 className="titulo-header">Palta tectonica</h3>
+        </div>
         <div className="main">
           <div className="lateral">
             <button className="calendario" onClick={() => setView("calendario")}>

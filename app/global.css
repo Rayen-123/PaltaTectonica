@@ -11,14 +11,42 @@ body {
 .encabezado {
     background-color: #333;
     color: white;
-    padding: 20px;
+    padding: 35px;
     text-align: center;
 }
 
+.titulo-header{
+    font-family: Arial;
+    font-size: 16px;
+}
 .main {
     display: flex;
     flex: 1;
 }
+
+.usuario-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: absolute;
+  top: 15px;
+  left: 15px;
+}
+
+.usuario-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white;
+}
+
+.usuario-nombre {
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+}
+
 
 .principal-lista {
   color: black; /* en vez de white */
