@@ -1579,4 +1579,70 @@ body {
         margin-right: 10px;
     }
 
+    
+}
+@media (max-width: 768px) {
+  /* Que la página de recetas no se "ahogue" en el alto fijo */
+  .principal-recetas {
+    padding: 12px;
+    height: auto;
+    min-height: 100vh;  /* deja crecer con el contenido */
+    overflow-y: auto;
+  }
+
+  /* Layout en columna: primero recetas, luego filtros */
+  .recetas-layout {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .zona-recetas {
+    order: 1;
+    min-width: 0;
+  }
+
+  .filtros-tags {
+    order: 2;
+    width: 100%;
+  }
+
+  .radiocards-tags-wrapper {
+    max-height: 180px;
+  }
+
+  /* Buscador adaptable al ancho del teléfono */
+  .busqueda-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding-left: 0;
+  }
+
+  .buscador {
+    width: 100%;
+  }
+
+  .boton-busqueda,
+  .boton-busqueda-recarga {
+    width: 100%;
+  }
+
+  /* Carrusel de tarjetas más compacto en móvil */
+  .contenedor-tarjetas-horizontal {
+    padding: 8px 0;
+    gap: 12px;
+    margin-bottom: 24px;
+    overflow-x: auto;
+  }
+
+  .contenedor-tarjeta {
+    width: 260px;
+    min-width: 260px;
+    height: 350px;
+  }
+
+  /* Un poco menos de separación general entre secciones */
+  .categoria-seccion {
+    margin-bottom: 24px;
+  }
 }
