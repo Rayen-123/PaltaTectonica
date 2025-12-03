@@ -8,25 +8,25 @@ body {
     height: 100vh;
 }
 .lateral {
-    /* ... estilos base ... */
+    
     transition: transform 0.3s ease-in-out;
-    z-index: 1010; /* Debe estar por encima del contenido principal */
+    z-index: 1010; 
 }
 .boton-abrir-drawer {
     position: absolute;
     top: 10px; 
     left: 10px;
-    z-index: 1020; /* Por encima del encabezado */
+    z-index: 1020; 
     background: none;
     border: none;
     color: white;
     font-size: 24px;
     cursor: pointer;
     padding: 5px;
-    display: none; /* Oculto por defecto, visible solo en móvil */
+    display: none;
 }
 
-/* Overlay para cerrar el Drawer al hacer clic fuera */
+
 .drawer-overlay-lateral {
     position: fixed;
     top: 0;
@@ -38,7 +38,7 @@ body {
     display: none;
 }
 
-/* Botón de cierre dentro del Drawer (opcional) */
+
 .boton-cerrar-drawer-lateral {
     position: absolute;
     top: 10px;
@@ -51,14 +51,14 @@ body {
     padding: 5px;
 }
 
-/* Media Query para activar el modo Drawer */
+
 @media (max-width: 768px) {
-    /* Mostrar el botón de abrir */
+
     .boton-abrir-drawer {
         display: block; 
     }
     
-    /* Mostrar el overlay solo cuando el drawer está abierto */
+
     .drawer-open ~ .drawer-overlay-lateral {
         display: block;
     }
@@ -82,39 +82,40 @@ body {
     }
 
     /* Ocultar la navegación de escritorio en el encabezado cuando el Drawer está abierto */
-    .main {
-        /* Se mantiene flex-direction: column; de la modificación anterior */
-    }
-}
-.encabezado {
-    background-color: #333;
-    color: white;
-    padding: 15px 35px;
-    text-align: center;
-}
 
-.titulo-header{
-    font-family: Arial;
-    font-size: 16px;
-    line-height: 20px;
 }
 .main {
     display: flex;
     flex: 1;
 }
 
+.encabezado {
+  position: relative;
+  background-color: #333;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 60px; 
+  padding: 10px 20px; 
+
+  box-sizing: border-box;
+}
+
+/* Usuario a la izquierda */
 .usuario-header {
+  position: absolute;
+  left: 20px;
+
   display: flex;
   align-items: center;
   gap: 10px;
-  position: absolute;
-  top: 6px;
-  left: 15px;
 }
 
 .usuario-avatar {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid white;
@@ -122,10 +123,23 @@ body {
 
 .usuario-nombre {
   color: white;
-  font-weight: bold;
   font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
+/* Título centrado, responsive */
+.titulo-header {
+  color: white;
+  margin: 0;
+
+  font-size: clamp(18px, 2.5vw, 28px);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-align: center;
+
+  pointer-events: none; /* evita que lo pisen clics */
+}
 
 .principal-lista {
   color: black; /* en vez de white */
@@ -1443,7 +1457,7 @@ body {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-/* Scroll personalizado para el contenedor de tags */
+
 .contenedor-tags-scroll::-webkit-scrollbar {
   width: 8px;
 }
@@ -1463,7 +1477,7 @@ body {
   background: #a8a8a8;
 }
 
-/* Para Firefox */
+
 .contenedor-tags-scroll {
   scrollbar-width: thin;
   scrollbar-color: #c1c1c1 #f1f1f1;
@@ -1473,7 +1487,7 @@ body {
 .contenedor-tags-scroll:hover {
   border-color: #a8a8a8;
 }
-/* Ajustes para el card body */
+
 .card-body {
   display: flex;
   flex-direction: column;
@@ -1489,7 +1503,7 @@ body {
   color: #374151;
 }
 
-/* Responsive */
+
 @media (max-width: 768px) {
   .contenedor-tags-scroll {
     max-height: 100px;
@@ -1523,44 +1537,42 @@ body {
   }
 }
 @media (max-width: 768px) {
-    /* ... otros estilos ... */
 
-    /* AJUSTE DEL ENCABEZADO */
     .encabezado {
         padding-left: 60px; 
         padding-right: 10px; 
-        text-align: right; /* ¡Todo el contenido del encabezado a la derecha! */
+        text-align: right;
     }
     
     .titulo-header {
         position: static; 
-        /* Eliminamos el margin-left de compensación */
+    
         margin-left: 0; 
-        text-align: right; /* Forzamos la alineación a la derecha */
+        text-align: right; 
     }
     
-    /* El usuario-header (Gatlitopro) está en la izquierda absoluta, no le afecta */
+
 }
 @media (max-width: 768px) {
-    /* ... estilos de Drawer ... */
+
 
     .lateral {
-        /* ... estilos existentes ... */
+
         padding-top: 80px; 
         flex-direction: column; 
-        /* Necesario para usar margin: auto */
-        display: flex; /* Aseguramos que el Drawer use Flexbox */
-        /* ... otros estilos ... */
+ 
+        display: flex; 
+
     }
     
-    /* Empujar el primer botón de navegación hacia abajo */
+ 
     .lateral .calendario {
-        margin-top: 15px; /* Esto empuja los 3 botones al fondo */
+        margin-top: 15px;
     }
     
-    /* Ajuste visual para los botones del Drawer */
+   
     .lateral .calendario, .lateral .recetas, .lateral .lista {
-        width: calc(100% - 20px); /* Ajustar el ancho para que quepa bien dentro del padding del Drawer */
+        width: calc(100% - 20px); 
         margin-left: 10px;
         margin-right: 10px;
     }
