@@ -9,6 +9,12 @@ export default function Page() {
   const [view, setView] = useState("calendario");
   const [usuario, setUsuario] = useState(null);
   const [cargando, setCargando] = useState(true);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  
+  const handleViewChange = (newView) => { 
+    setView(newView);
+    setIsDrawerOpen(false); // Cierra el drawer al seleccionar una vista
+  };
 
   useEffect(() => {
       async function cargarDatosIniciales() {
@@ -36,6 +42,13 @@ export default function Page() {
   return (
     <>
       <div className="contenedor">
+        <button 
+            className="boton-abrir-drawer" 
+            onClick={() => setIsDrawerOpen(true)}
+            aria-label="Abrir Menú de Navegación"
+        >
+            ☰
+        </button>
         <div className="encabezado">
           {usuario && (
             <div className="usuario-header">
@@ -50,18 +63,24 @@ export default function Page() {
           <h3 className="titulo-header">Palta tectonica</h3>
         </div>
         <div className="main">
-          <div className="lateral">
-            <button className="calendario" onClick={() => setView("calendario")}>
+          <div className={`lateral ${isDrawerOpen ? 'drawer-open' : ''}`}> 
+            <button className="calendario" onClick={() => handleViewChange("calendario")}>
               Calendario
             </button>
-            <button className="recetas" onClick={() => setView("recetas")}>
+            <button className="recetas" onClick={() => handleViewChange("recetas")}>
               Recetas
             </button>
-            <button className="lista" onClick={() => setView("lista")}>
+            <button className="lista" onClick={() => handleViewChange("lista")}>
               Lista
             </button>
+            {/* Botón de cierre dentro del drawer (opcional) */}
+            <button 
+                className="boton-cerrar-drawer-lateral" 
+                onClick={() => setIsDrawerOpen(false)}
+            >
+                ✕
+            </button>
           </div>
-          
           {/* Renderizar el componente correspondiente según la vista */}
           {view === "calendario" && <Calendario />}
           {view === "recetas" && <Recetas />}

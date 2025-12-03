@@ -7,7 +7,85 @@ body {
     flex-direction: column;
     height: 100vh;
 }
+.lateral {
+    /* ... estilos base ... */
+    transition: transform 0.3s ease-in-out;
+    z-index: 1010; /* Debe estar por encima del contenido principal */
+}
+.boton-abrir-drawer {
+    position: absolute;
+    top: 10px; 
+    left: 10px;
+    z-index: 1020; /* Por encima del encabezado */
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+    display: none; /* Oculto por defecto, visible solo en móvil */
+}
 
+/* Overlay para cerrar el Drawer al hacer clic fuera */
+.drawer-overlay-lateral {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 1005;
+    display: none;
+}
+
+/* Botón de cierre dentro del Drawer (opcional) */
+.boton-cerrar-drawer-lateral {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+/* Media Query para activar el modo Drawer */
+@media (max-width: 768px) {
+    /* Mostrar el botón de abrir */
+    .boton-abrir-drawer {
+        display: block; 
+    }
+    
+    /* Mostrar el overlay solo cuando el drawer está abierto */
+    .drawer-open ~ .drawer-overlay-lateral {
+        display: block;
+    }
+    
+    /* Configuración del Drawer */
+    .lateral {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 250px; /* Ancho cómodo para el Drawer */
+        padding-top: 50px; /* Espacio para el botón de cierre */
+        flex-direction: column; /* Botones vuelven a apilarse */
+        transform: translateX(-100%); /* Oculto por defecto */
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+    }
+    
+    /* Mostrar el Drawer cuando está activo */
+    .lateral.drawer-open {
+        transform: translateX(0);
+    }
+
+    /* Ocultar la navegación de escritorio en el encabezado cuando el Drawer está abierto */
+    .main {
+        /* Se mantiene flex-direction: column; de la modificación anterior */
+    }
+}
 .encabezado {
     background-color: #333;
     color: white;
@@ -1443,4 +1521,48 @@ body {
   .badges-grid {
     gap: 4px;
   }
+}
+@media (max-width: 768px) {
+    /* ... otros estilos ... */
+
+    /* AJUSTE DEL ENCABEZADO */
+    .encabezado {
+        padding-left: 60px; 
+        padding-right: 10px; 
+        text-align: right; /* ¡Todo el contenido del encabezado a la derecha! */
+    }
+    
+    .titulo-header {
+        position: static; 
+        /* Eliminamos el margin-left de compensación */
+        margin-left: 0; 
+        text-align: right; /* Forzamos la alineación a la derecha */
+    }
+    
+    /* El usuario-header (Gatlitopro) está en la izquierda absoluta, no le afecta */
+}
+@media (max-width: 768px) {
+    /* ... estilos de Drawer ... */
+
+    .lateral {
+        /* ... estilos existentes ... */
+        padding-top: 80px; 
+        flex-direction: column; 
+        /* Necesario para usar margin: auto */
+        display: flex; /* Aseguramos que el Drawer use Flexbox */
+        /* ... otros estilos ... */
+    }
+    
+    /* Empujar el primer botón de navegación hacia abajo */
+    .lateral .calendario {
+        margin-top: 15px; /* Esto empuja los 3 botones al fondo */
+    }
+    
+    /* Ajuste visual para los botones del Drawer */
+    .lateral .calendario, .lateral .recetas, .lateral .lista {
+        width: calc(100% - 20px); /* Ajustar el ancho para que quepa bien dentro del padding del Drawer */
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
 }
