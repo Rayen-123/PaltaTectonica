@@ -1583,131 +1583,76 @@ body {
 }
 
 /* ===== CALENDARIO: PAGINADOR DE SEMANAS BONITO EN CELULAR ===== */
+/* ===== RECETAS RESPONSIVE EN CELULAR (PARCHE + ESTILO UNIDOS) ===== */
 @media (max-width: 768px) {
-
-  /* Contenedor general del calendario un poco más compacto */
-  .principal-calendario {
-    padding: 10px;
+  /* Que la página pueda crecer y no corte las tarjetas */
+  .principal-recetas {
+    padding: 12px;
+    padding-bottom: 80px;   /* espacio extra abajo para que no se corte */
+    height: auto;           /* que crezca con el contenido */
+    min-height: 100vh;      /* pero al menos llene pantalla */
+    overflow-y: auto;       /* scroll normal */
   }
 
-  .principal-calendario .controles-semana {
-    margin-bottom: 8px;
-    padding: 6px 8px;
-    border-radius: 8px;
+  /* Quitar límite de alto que recortaba las tarjetas */
+  .contenedor-tarjetas {
+    max-height: none;       /* antes calc(100vh - 100px) */
+    overflow-y: visible;    /* deja que crezcan */
   }
 
-  .principal-calendario .titulo-semana {
-    gap: 0.4rem;
+  /* Layout móvil: primero recetas, luego filtros */
+  .recetas-layout {
+    flex-direction: column;
+    gap: 1rem;
   }
 
-  .principal-calendario .titulo-semana h2 {
-    font-size: 1.1rem;
+  .zona-recetas {
+    order: 1;
+    min-width: 0;
   }
 
-  /* Paginación compacta que no se sale de la pantalla */
-  .principal-calendario .paginacion-semanas {
+  .filtros-tags {
+    order: 2;
     width: 100%;
-    gap: 0.2rem;
   }
 
-  .principal-calendario .controles-paginacion {
+  /* Lista de tags laterales un poco más compacta */
+  .radiocards-tags-wrapper {
+    max-height: 180px;
+  }
+
+  /* Buscador responsive */
+  .busqueda-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding-left: 0;
+  }
+
+  .buscador {
     width: 100%;
-    padding: 4px 6px;
-    gap: 4px;
-    border-radius: 8px;
-
-    display: grid;
-    grid-template-columns: auto 1fr auto; /* flecha - números - flecha */
-    align-items: center;
-    box-sizing: border-box;
   }
 
-  /* La tira de semanas scrollea horizontal si no caben */
-  .principal-calendario .numeros-semanas {
-    display: flex;
-    gap: 4px;
+  .boton-busqueda,
+  .boton-busqueda-recarga {
+    width: 100%;
+  }
+
+  /* Carrusel de tarjetas en modo móvil */
+  .contenedor-tarjetas-horizontal {
+    padding: 8px 0;
+    gap: 12px;
+    margin-bottom: 24px;
     overflow-x: auto;
-    overflow-y: hidden;
-    padding: 0 2px;
   }
 
-  .principal-calendario .numeros-semanas::-webkit-scrollbar {
-    height: 4px;
+  .contenedor-tarjeta {
+    width: 260px;
+    min-width: 260px;
+    height: 350px;
   }
 
-  .principal-calendario .numeros-semanas::-webkit-scrollbar-thumb {
-    background: rgba(0,0,0,0.25);
-    border-radius: 999px;
-  }
-
-  /* Botones de semana chiquititos tipo “pastillas” */
-  .principal-calendario .numero-semana {
-    min-width: 28px;
-    height: 28px;
-    padding: 0;
-    font-size: 0.7rem;
-    border-radius: 999px;
-    white-space: nowrap;
-    flex: 0 0 auto;
-  }
-
-  .principal-calendario .numero-semana.activa {
-    font-weight: 700;
-    box-shadow: 0 0 0 1px rgba(59,130,246,0.6);
-  }
-
-  /* Flechas izquierda y derecha más pequeñas */
-  .principal-calendario .boton-paginacion {
-    min-width: 28px;
-    height: 28px;
-    padding: 0;
-    font-size: 0.9rem;
-    border-radius: 999px;
-  }
-
-  /* Texto “Semanas 1–10 de 52” más discreto */
-  .principal-calendario .info-paginacion {
-    margin-top: 4px;
-    text-align: center;
-  }
-
-  .principal-calendario .rango-semanas {
-    font-size: 0.7rem;
-    line-height: 1.1;
-  }
-
-  /* De paso apretamos un poco el calendario para que no se vea gigante */
-  .principal-calendario .semana {
-    padding: 10px;
-  }
-
-  .principal-calendario .dia {
-    padding: 8px 4px;
-  }
-
-  .principal-calendario .dia h5 {
-    font-size: 0.9rem;
-    margin-bottom: 4px;
-  }
-
-  .principal-calendario .comidas {
-    padding: 6px;
-    gap: 6px;
-  }
-
-  .principal-calendario .comida {
-    padding: 6px 8px;
-  }
-
-  .principal-calendario .nombre-comida {
-    font-size: 0.8rem;
-  }
-
-  .principal-calendario .imagen-receta-calendario {
-    height: 60px;
-  }
-
-  .principal-calendario .nombre-receta-completo {
-    font-size: 0.7rem;
+  .categoria-seccion {
+    margin-bottom: 24px;
   }
 }
