@@ -1582,25 +1582,23 @@ body {
 
 }
 
-
-
-/* ===== PARCHE PARA QUE RECETAS NO SE CORTEN EN TELÉFONO ===== */
 @media (max-width: 768px) {
-  /* Que la página pueda crecer más allá del alto de la pantalla */
+  /* Que la página pueda crecer y no corte las tarjetas */
   .principal-recetas {
-    height: auto;          /* antes 100vh */
-    min-height: 100vh;     /* que al menos llene la pantalla */
-    overflow-y: auto;      /* scroll normal si se necesita */
-    padding-bottom: 80px;  /* un poco más de aire abajo para que no quede cortado */
+    padding: 12px;
+    padding-bottom: 80px;   /* espacio extra abajo para que no se corte */
+    height: auto;           /* que crezca con el contenido */
+    min-height: 100vh;      /* pero al menos llene pantalla */
+    overflow-y: auto;       /* scroll normal */
   }
 
-  /* Quitar el límite de alto interno que recorta tarjetas */
+  /* Quitar límite de alto que recortaba las tarjetas */
   .contenedor-tarjetas {
-    max-height: none;      /* antes calc(100vh - 100px) */
-    overflow-y: visible;   /* deja que el contenido crezca */
+    max-height: none;       /* antes calc(100vh - 100px) */
+    overflow-y: visible;    /* deja que crezcan */
   }
 
-  /* Layout más amigable en móvil */
+  /* Layout móvil: primero recetas, luego filtros */
   .recetas-layout {
     flex-direction: column;
     gap: 1rem;
@@ -1614,6 +1612,11 @@ body {
   .filtros-tags {
     order: 2;
     width: 100%;
+  }
+
+  /* Lista de tags laterales un poco más compacta */
+  .radiocards-tags-wrapper {
+    max-height: 180px;
   }
 
   /* Buscador responsive */
@@ -1633,7 +1636,7 @@ body {
     width: 100%;
   }
 
-  /* Carrusel un poco más compacto en móvil */
+  /* Carrusel de tarjetas en modo móvil */
   .contenedor-tarjetas-horizontal {
     padding: 8px 0;
     gap: 12px;
@@ -1645,5 +1648,9 @@ body {
     width: 260px;
     min-width: 260px;
     height: 350px;
+  }
+
+  .categoria-seccion {
+    margin-bottom: 24px;
   }
 }
