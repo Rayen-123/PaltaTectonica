@@ -1582,42 +1582,30 @@ body {
 
 }
 
+
 @media (max-width: 768px) {
 
   .principal-recetas {
-    height: auto;          /* antes 100vh */
-    min-height: 100vh;     /* que al menos llene la pantalla */
-    overflow-y: auto;      /* scroll normal si se necesita */
-    padding-bottom: 80px;  /* un poco más de aire abajo para que no quede cortado */
+    padding: 12px;
+    height: auto;         
+    min-height: 100vh;
   }
 
-  /* Quitar el límite de alto interno que recorta tarjetas */
-  .contenedor-tarjetas {
-    max-height: none;      /* antes calc(100vh - 100px) */
-    overflow-y: visible;   /* deja que el contenido crezca */
-  }
-
-  /* Layout más amigable en móvil */
-  .recetas-layout {
+  .header-recetas {
     flex-direction: column;
-    gap: 1rem;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 12px;
   }
 
-  .zona-recetas {
-    order: 1;
-    min-width: 0;
+  .header-recetas h2 {
+    font-size: 20px !important;
   }
 
-  .filtros-tags {
-    order: 2;
-    width: 100%;
-  }
-
-  /* Buscador responsive */
   .busqueda-container {
     flex-direction: column;
     align-items: stretch;
-    gap: 8px;
+    gap: 6px;
     padding-left: 0;
   }
 
@@ -1626,21 +1614,80 @@ body {
   }
 
   .boton-busqueda,
-  .boton-busqueda-recarga {
+  .boton-busqueda-recarga,
+  .botonNuevas {
     width: 100%;
+    text-align: center;
   }
 
-  /* Carrusel un poco más compacto en móvil */
+
+  .contenedor-netflix {
+    gap: 16px;
+    padding: 10px 0 20px;
+  }
+
+  .categoria-seccion {
+    margin-bottom: 12px;
+  }
+
+  .titulo-categoria {
+    font-size: 18px !important;
+    padding-left: 0;
+  }
+
   .contenedor-tarjetas-horizontal {
-    padding: 8px 0;
+    display: grid;
+    grid-template-columns: 1fr;
     gap: 12px;
-    margin-bottom: 24px;
-    overflow-x: auto;
+    padding: 0;
+    overflow-x: visible;  
+    margin-bottom: 8px;
   }
 
   .contenedor-tarjeta {
-    width: 260px;
-    min-width: 260px;
-    height: 350px;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    height: 340px;        
+  }
+
+  .tarjeta-frente,
+  .tarjeta-reverso {
+    border-radius: 10px;
+  }
+
+  .tarjeta {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+
+
+  .imagen-receta {
+    height: 140px;
+  }
+
+ 
+  .card-body {
+    padding: 10px;
+  }
+
+  .card-footer {
+    padding: 8px 10px;
+    gap: 6px;
+  }
+
+  .botonGirar {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+
+
+  .contenedor-tags-scroll {
+    max-height: 70px;
+    padding: 6px;
+  }
+
+  .badges-grid .badge {
+    font-size: 8px;
+    min-height: 20px;
   }
 }
