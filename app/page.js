@@ -67,6 +67,18 @@ export default function Page() {
           {view === "recetas" && <Recetas />}
           {view === "lista" && <Lista />}
         </div>
+        <footer className="footer">
+            <div className="footer-contenido">
+                <div className="footer-seccion">
+                    <span>© {new Date().getFullYear()} Palta Tectonica. Todos los derechos reservados.</span>
+                </div>
+                <div className="footer-seccion">
+                    <span>Creadores: Rayen Aburto, Andy Briones, Quidel Barriga</span>
+                    <span>Profesor: Julio Guerra</span>
+                    <span>Asignatura: Taller de construcción de software</span>
+                </div>
+            </div>
+        </footer>
       </div>
     </>
   );

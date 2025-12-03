@@ -210,14 +210,14 @@ export default function Recetas() {
 
           <div className="contenedor-netflix">
             <div className="categoria-seccion">
-              <div className="contenedor-tarjetas-horizontal">
-                {recetasFiltradas.map((receta) => (
-                  <div
-                    key={receta.id}
-                    className={`contenedor-tarjeta ${
-                      tarjetasGiradas[receta.id] ? "girada" : ""
-                    }`}
-                  >
+              <div className="grid-recetas-vertical">
+                  {recetasFiltradas.map((receta) => (
+                    <div
+                      key={receta.id}
+                      className={`contenedor-tarjeta ${
+                        tarjetasGiradas[receta.id] ? "girada" : ""
+                      }`}
+                    >
                     <div className="tarjeta-frente">
                       <Card.Root className="tarjeta">
                         <Image

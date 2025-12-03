@@ -11,13 +11,14 @@ body {
 .encabezado {
     background-color: #333;
     color: white;
-    padding: 35px;
+    padding: 15px 35px;
     text-align: center;
 }
 
 .titulo-header{
     font-family: Arial;
     font-size: 16px;
+    line-height: 20px;
 }
 .main {
     display: flex;
@@ -29,7 +30,7 @@ body {
   align-items: center;
   gap: 10px;
   position: absolute;
-  top: 15px;
+  top: 6px;
   left: 15px;
 }
 
@@ -52,7 +53,6 @@ body {
   color: black; /* en vez de white */
 }
 
-.principal-lista .custom-table th,
 .principal-lista .custom-table td {
   color: black !important;
 }
@@ -83,7 +83,44 @@ body {
 .radiocards-tags-wrapper::-webkit-scrollbar-thumb:hover {
   background: #777;
 }
+/*info*/
+.footer {
+    background-color: #333; /* El mismo color del encabezado */
+    color: #a0a0a0; /* Gris claro para el texto */
+    padding: 20px 0;
+    text-align: center;
+    font-size: 0.8rem;
+    border-top: 1px solid #444; /* Línea sutil de separación */
+    width: 100%;
+    box-sizing: border-box;
+    flex-shrink: 0; /* Asegura que no se encoja */
+}
 
+.footer-contenido {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.footer-seccion {
+    margin-bottom: 10px;
+}
+
+.footer-seccion span {
+    margin: 0 10px;
+    white-space: nowrap;
+}
+
+.footer-seccion a {
+    color: #00a7b3; /* Color de acento de tu aplicación */
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-seccion a:hover {
+    color: white;
+    text-decoration: underline;
+}
 /*lista*/
 .recetas-layout {
   display: flex;
@@ -205,7 +242,49 @@ body {
     overflow-y: auto;
     min-height: 100vh;
 }
+.grid-recetas-vertical {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 3 columnas iguales */
+  gap: 10px;
+  padding: 20px 0;
+}
 
+/* Ajustes de tamaño para la tarjeta */
+.contenedor-tarjeta {
+  width: 100%; /* Ocupa todo el ancho de su columna */
+  height: 400px;
+  perspective: 1000px;
+}
+
+/* Media Query para responsividad */
+@media (max-width: 1200px) {
+  .grid-recetas-vertical {
+    grid-template-columns: repeat(2, 1fr); /* 2 columnas en pantallas medianas */
+  }
+}
+
+@media (max-width: 768px) {
+  .grid-recetas-vertical {
+    grid-template-columns: 1fr; /* 1 columna en pantallas pequeñas */
+  }
+}
+@media (max-width: 1400px) { /* Nuevo punto de quiebre para 3 columnas */
+  .grid-recetas-vertical {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 1000px) { /* Punto de quiebre para 2 columnas */
+  .grid-recetas-vertical {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) { 
+  .grid-recetas-vertical {
+    grid-template-columns: 1fr; /* 1 columna en pantallas pequeñas */
+  }
+}
 .controles-semana {
     display: flex;
     justify-content: center;
@@ -798,7 +877,6 @@ body {
     padding: 20px;
     overflow-y: auto;
 }
-
 .principal-lista h2 {
     text-align: center;
     padding-bottom: 20px;
@@ -838,13 +916,15 @@ body {
 .table-content {
   background-color: white;
 }
+
 /* =============================================================================== Recetas ===============================================================================*/
+/* Asegurar que el contenedor principal permite el scroll */
 .principal-recetas {
     background-color: #00a7b3;
     flex: 1;
     color: white;
     padding: 20px;
-    overflow-y: auto;
+    overflow-y: auto; /* Esto es clave para el scroll vertical */
     height: 100vh;
     min-height: 100vh;
 }

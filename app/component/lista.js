@@ -133,7 +133,7 @@ export default function Lista() {
       ) : (
         <Table.Root size="sm" variant="outline" className="custom-table">
           <Table.Header>
-            <Table.Row>
+            <Table.Row className="titulo-tabla">
               <Table.ColumnHeader>Ingrediente</Table.ColumnHeader>
               <Table.ColumnHeader>Cantidad</Table.ColumnHeader>
             </Table.Row>
