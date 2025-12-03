@@ -1,5 +1,5 @@
 "use client";
-import { Button, Card, Image, Text, Box, Spinner, Alert} from "@chakra-ui/react";
+import { Button, Card, Image, Text, Box, Spinner, Alert } from "@chakra-ui/react";
 import { useState, useEffect, useMemo } from "react";
 
 export default function Recetas() {
@@ -11,12 +11,11 @@ export default function Recetas() {
   const [recetasFiltradas, setRecetasFiltradas] = useState([]);
   const [tagSeleccionado, setTagSeleccionado] = useState([]);
 
-
-  function recarga(){
+  function recarga() {
     setQuery("");
   }
 
-  function actualizar(){
+  function actualizar() {
     recarga();
     setTagSeleccionado([]);
     obtenerRecetas();
@@ -24,11 +23,10 @@ export default function Recetas() {
   }
 
   function handleKeyDown(e) {
-  if (e.key === "Enter") {
-    buscarRecetas();
+    if (e.key === "Enter") {
+      buscarRecetas();
+    }
   }
-  }
-
 
   function buscarRecetas() {
     const texto = query.trim().toLowerCase();
@@ -60,9 +58,10 @@ export default function Recetas() {
 
       return coincideTexto && coincideTag;
     });
-  setRecetasFiltradas(temp);
-}
-  
+
+    setRecetasFiltradas(temp);
+  }
+
   const obtenerRecetas = async () => {
     try {
       setLoading(true);
@@ -82,14 +81,13 @@ export default function Recetas() {
       setLoading(false);
     }
   };
-  
+
   useEffect(() => {
-  obtenerRecetas();
+    obtenerRecetas();
   }, []);
 
   useEffect(() => {
     buscarRecetas();
-    
   }, [query, recetas, tagSeleccionado]);
 
   const girarTarjeta = (id) => {
@@ -98,34 +96,44 @@ export default function Recetas() {
       [id]: !prev[id],
     }));
   };
-  
+
   useEffect(() => {
     const handleWheel = (e) => {
-      const scrollContainers = document.querySelectorAll('.contenedor-tags-scroll');
-      scrollContainers.forEach(container => {
+      const scrollContainers = document.querySelectorAll(".contenedor-tags-scroll");
+      scrollContainers.forEach((container) => {
         if (container.contains(e.target) || e.target === container) {
-          // Permitir el scroll nativo
           return;
         }
       });
     };
 
-    document.addEventListener('wheel', handleWheel, { passive: false });
-    
-     return () => {
-      document.removeEventListener("wheel", handleWheel);
-      };
-    }, []);
+    document.addEventListener("wheel", handleWheel, { passive: false });
 
-    const tagsDisponibles = useMemo(
+    return () => {
+      document.removeEventListener("wheel", handleWheel);
+    };
+  }, []);
+
+
+  const tagsDisponibles = useMemo(
     () =>
       Array.from(
-        new Set(
-          recetas.flatMap((receta) => receta.tags || receta.Tags || [])
-        )
+        new Set(recetas.flatMap((receta) => receta.tags || receta.Tags || []))
       ),
     [recetas]
   );
+
+  const recetasPorFila = 20;
+
+  const recetasAgrupadas = useMemo(() => {
+    const grupos = [];
+    for (let i = 0; i < recetasFiltradas.length; i += recetasPorFila) {
+      grupos.push(recetasFiltradas.slice(i, i + recetasPorFila));
+    }
+    return grupos;
+  }, [recetasFiltradas]);
+
+
   if (loading) {
     return (
       <div className="principal-recetas">
@@ -154,70 +162,74 @@ export default function Recetas() {
     );
   }
 
-  return (
-    <div className="principal-recetas">
-      <div className="recetas-layout">
-        
-        <aside className="filtros-tags">
-          <h3>Filtrar por tag</h3>
+return (
+  <div className="principal-recetas">
+    <div className="recetas-layout">
+      
+      <aside className="filtros-tags">
+        <h3>Filtrar por tag</h3>
 
-          <div className="radiocards-tags-wrapper">
-            <div className="radiocards-tags">
-              {tagsDisponibles.map((tag) => (
-                <button
-                  key={tag}
-                  className={
-                    "tag-card" + (tagSeleccionado.includes(tag) ? " tag-card-activo" : "")
-                  }
-                  onClick={() =>
-                    setTagSeleccionado((prev) =>
-                      prev.includes(tag)
-                        ? prev.filter((t) => t !== tag)
-                        : [...prev, tag]
-                    )
-                  }
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
+        <div className="radiocards-tags-wrapper">
+          <div className="radiocards-tags">
+            {tagsDisponibles.map((tag) => (
+              <button
+                key={tag}
+                className={
+                  "tag-card" + (tagSeleccionado.includes(tag) ? " tag-card-activo" : "")
+                }
+                onClick={() =>
+                  setTagSeleccionado((prev) =>
+                    prev.includes(tag)
+                      ? prev.filter((t) => t !== tag)
+                      : [...prev, tag]
+                  )
+                }
+              >
+                {tag}
+              </button>
+            ))}
           </div>
-        </aside>
+        </div>
+      </aside>
 
-        <div className="zona-recetas">
-          <div className="header-recetas">
-            <h2>🍳 Recetas</h2>
-            <div className="contador-recetas">
-              <Button onClick={actualizar} className="botonNuevas">
-                🔄 Actualizar
-              </Button>
-            </div>
-          </div>
-
-          <div className="busqueda-container">
-            <input
-              type="text"
-              placeholder="Buscar receta..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              className="buscador"
-              onKeyDown={handleKeyDown}
-            />
-            <Button className="boton-busqueda" onClick={buscarRecetas}>
-              Buscar
+      <div className="zona-recetas">
+        <div className="header-recetas">
+          <h2>🍳 Recetas</h2>
+          <div className="contador-recetas">
+            <Button onClick={actualizar} className="botonNuevas">
+              🔄 Actualizar
             </Button>
           </div>
+        </div>
 
-          <div className="contenedor-netflix">
-            <div className="categoria-seccion">
-              <div className="grid-recetas-vertical">
-                  {recetasFiltradas.map((receta) => (
-                    <div
-                      key={receta.id}
-                      className={`contenedor-tarjeta ${
-                        tarjetasGiradas[receta.id] ? "girada" : ""
-                      }`}
-                    >
+        <div className="busqueda-container">
+          <input
+            type="text"
+            placeholder="Buscar receta..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="buscador"
+            onKeyDown={handleKeyDown}
+          />
+          <Button className="boton-busqueda" onClick={buscarRecetas}>
+            Buscar
+          </Button>
+        </div>
+
+        <div className="contenedor-netflix">
+          <div className="categoria-seccion">
+            {recetasAgrupadas.map((grupo, idxGrupo) => (
+              <div
+                key={idxGrupo}
+                className="contenedor-tarjetas-horizontal"
+              >
+                {grupo.map((receta) => (
+                  <div
+                    key={receta.id}
+                    className={`contenedor-tarjeta ${
+                      tarjetasGiradas[receta.id] ? "girada" : ""
+                    }`}
+                  >
                     <div className="tarjeta-frente">
                       <Card.Root className="tarjeta">
                         <Image
@@ -299,10 +311,10 @@ export default function Recetas() {
                   </div>
                 ))}
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
     </div>
-  );
-}
+  </div>
+);}
