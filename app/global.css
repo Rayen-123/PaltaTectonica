@@ -1224,7 +1224,7 @@ body {
 }
 
 .categoria-seccion {
-    margin-bottom: 30px;
+    margin-bottom: 40px;
 }
 
 .titulo-categoria {
@@ -1242,6 +1242,8 @@ body {
     overflow-x: auto;
     padding: 10px 20px;
     scroll-behavior: smooth;
+    margin-bottom: 8px;
+    
 }
 
 .contenedor-tarjetas-horizontal::-webkit-scrollbar {
